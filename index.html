@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e1012">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="כספים">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>כספים אישיים — גל</title>
+<style>
+  :root{
+    --bg:#0e1012; --card:#191c20; --card2:#20242a; --line:#2b3038;
+    --gold:#F1C93B; --green:#3ea653; --greenD:#1F5D24;
+    --red:#ef5f5f; --txt:#eef1f4; --muted:#9aa4b0;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+  body{padding:0;min-height:100dvh}
+  .wrap{max-width:520px;margin:0 auto;padding:16px 14px 40px}
+
+  /* מסך קוד */
+  #lock{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px}
+  #lock .logo{font-size:44px}
+  #lock h1{margin:0;font-size:21px;font-weight:800}
+  #lock p{margin:0;color:var(--muted);font-size:14px;text-align:center}
+  #pin{width:200px;font-size:26px;letter-spacing:8px;text-align:center;padding:14px;border-radius:14px;
+    border:1px solid var(--line);background:var(--card);color:var(--txt);outline:none}
+  #pin:focus{border-color:var(--gold)}
+  #unlock{background:var(--gold);color:#1a1200;border:none;font-weight:800;font-size:17px;
+    padding:13px 34px;border-radius:14px;cursor:pointer}
+  #err{color:var(--red);font-size:14px;min-height:18px}
+
+  /* אפליקציה */
+  #app{display:none}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  header .t{font-size:20px;font-weight:800}
+  header .u{font-size:12px;color:var(--muted)}
+  header button{background:var(--card);border:1px solid var(--line);color:var(--muted);
+    border-radius:10px;padding:8px 10px;font-size:13px;cursor:pointer}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:13px}
+  .card h2{margin:0 0 11px;font-size:14px;color:var(--muted);font-weight:700;letter-spacing:.3px}
+
+  /* גיבור פער */
+  .hero{background:linear-gradient(160deg,#20242a,#15181c);border-color:#2f3540}
+  .hero .row{display:flex;gap:10px}
+  .hero .stat{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:11px 12px}
+  .hero .stat .k{font-size:12px;color:var(--muted)}
+  .hero .stat .v{font-size:19px;font-weight:800;margin-top:3px}
+  .gapbig{text-align:center;margin:14px 0 4px}
+  .gapbig .lbl{font-size:13px;color:var(--muted)}
+  .gapbig .num{font-size:40px;font-weight:900;line-height:1.05;margin-top:2px}
+  .neg{color:var(--red)} .pos{color:var(--green)}
+  .hero .foot{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.5}
+
+  .li{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
+  .li:last-child{border-bottom:none}
+  .li .n{font-size:14.5px}
+  .li .note{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .li .a{font-weight:800;font-size:15px;white-space:nowrap}
+  .total{display:flex;justify-content:space-between;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);font-weight:800}
+  .total .a{color:var(--gold);font-size:17px}
+
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;margin-inline-start:6px}
+  .pill.in{background:rgba(62,166,83,.16);color:var(--green)}
+  .pill.owe{background:rgba(239,95,95,.16);color:var(--red)}
+  .pill.owed{background:rgba(241,201,59,.16);color:var(--gold)}
+
+  .bar{height:10px;border-radius:6px;background:var(--card2);overflow:hidden;margin-top:6px}
+  .bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--green))}
+  .mrow{margin:10px 0}
+  .mrow .top{display:flex;justify-content:space-between;font-size:13.5px}
+  .mrow .sub{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+  .rec{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+  .rec:last-child{border-bottom:none}
+  .rec .d{font-size:12px;color:var(--muted);min-width:42px}
+  .rec .v{font-size:13.5px;flex:1;padding:0 8px}
+  .rec .c{font-size:11px;color:var(--muted)}
+  .rec .a{font-weight:700;font-size:14px}
+  .foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:16px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="logo">🔐</div>
+  <h1>כספים אישיים — גל</h1>
+  <p>המידע מוצפן. הזן קוד כדי לפתוח.</p>
+  <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••••">
+  <button id="unlock">כניסה</button>
+  <div id="err"></div>
+</div>
+
+<div id="app"><div class="wrap" id="content"></div></div>
+
+<script>
+const BLOB = "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";
+const $ = s => document.querySelector(s);
+const nis = (n,d=0) => "₪" + Number(n).toLocaleString('he-IL',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+async function decrypt(pin){
+  const raw = Uint8Array.from(atob(BLOB), c => c.charCodeAt(0));
+  const salt = raw.slice(0,16), iv = raw.slice(16,28), data = raw.slice(28);
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt, iterations:250000, hash:'SHA-256'}, km,
+    {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, data);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+function render(D){
+  const sum = a => a.reduce((s,x)=>s+x.amount,0);
+  const fixedT = sum(D.fixed), kidsT = sum(D.kids), varT = sum(D.variable);
+  const committed = fixedT + kidsT;
+  const gap = D.income - committed;
+  const fullNeed = committed + varT;
+  const fullGap = D.income - fullNeed;
+
+  const item = x => `<div class="li"><div><div class="n">${x.name}</div>${x.note?`<div class="note">${x.note}</div>`:''}</div><div class="a">${nis(x.amount)}</div></div>`;
+
+  const openHtml = D.openItems.map(o=>{
+    const sign = o.kind==='owe' ? '−' : '+';
+    const cls = o.kind==='owe' ? 'owe' : (o.kind==='in'?'in':'owed');
+    return `<div class="li"><div><div class="n">${o.label}</div><div class="note">${o.status}</div></div>
+      <div class="a ${o.kind==='owe'?'neg':'pos'}">${sign}${nis(o.amount,2)}</div></div>`;
+  }).join('');
+
+  const maxM = Math.max(...D.months.map(m=>m.personal+m.kids), 1);
+  const monthsHtml = D.months.map(m=>{
+    const tot = m.personal+m.kids;
+    return `<div class="mrow"><div class="top"><b>${m.m}</b><span>${nis(tot,2)}</span></div>
+      <div class="bar"><span style="width:${Math.max(4,tot/maxM*100)}%"></span></div>
+      <div class="sub">${m.receipts} קבלות · אישי ${nis(m.personal,2)}${m.kids?` · ילדים ${nis(m.kids,2)}`:''}</div></div>`;
+  }).join('');
+
+  const recHtml = D.recent.map(r=>`<div class="rec"><div class="d">${r.date}</div>
+    <div class="v">${r.vendor}<div class="c">${r.cat}</div></div><div class="a">${nis(r.amount,2)}</div></div>`).join('');
+
+  $('#content').innerHTML = `
+    <header>
+      <div><div class="t">כספים אישיים</div><div class="u">עודכן ${D.updated}</div></div>
+      <button onclick="lock()">🔒 נעילה</button>
+    </header>
+
+    <div class="card hero">
+      <div class="row">
+        <div class="stat"><div class="k">הכנסה קבועה</div><div class="v pos">${nis(D.income)}</div></div>
+        <div class="stat"><div class="k">קבועים + ילדים</div><div class="v">${nis(committed)}</div></div>
+      </div>
+      <div class="gapbig">
+        <div class="lbl">פער חודשי (לפני מזון/דלק משתנים)</div>
+        <div class="num ${gap<0?'neg':'pos'}">${gap<0?'−':''}${nis(Math.abs(gap))}</div>
+      </div>
+      <div class="foot">עם צריכה משתנה (~${nis(varT)}) הצריכה החודשית ≈ <b>${nis(fullNeed)}</b> → פער ≈ <b class="neg">−${nis(Math.abs(fullGap))}</b></div>
+    </div>
+
+    <div class="card">
+      <h2>קבועים חודשיים</h2>
+      ${D.fixed.map(item).join('')}
+      <div class="total"><span>סה"כ קבועים</span><span class="a">${nis(fixedT)}</span></div>
+    </div>
+
+    <div class="card">
+      <h2>ילדים</h2>
+      ${D.kids.map(item).join('')}
+    </div>
+
+    <div class="card">
+      <h2>כספים פתוחים</h2>
+      ${openHtml}
+    </div>
+
+    <div class="card">
+      <h2>הוצאות שנרשמו — לפי חודש</h2>
+      ${monthsHtml}
+    </div>
+
+    <div class="card">
+      <h2>קבלות אחרונות</h2>
+      ${recHtml}
+    </div>
+
+    <div class="foot">כל מספר מהנתונים בפועל · חד-פעמי ≠ קבוע · המידע מוצפן ומעודכן ידנית.<br>עדכן בצ'אט → הדשבורד מתעדכן.</div>
+  `;
+}
+
+function lock(){
+  sessionStorage.removeItem('k');
+  $('#app').style.display='none';
+  $('#lock').style.display='flex';
+  $('#pin').value=''; $('#pin').focus();
+}
+
+async function tryPin(pin){
+  try{
+    const D = await decrypt(pin);
+    sessionStorage.setItem('k', pin);
+    $('#lock').style.display='none';
+    $('#app').style.display='block';
+    render(D);
+    return true;
+  }catch(e){ return false; }
+}
+
+$('#unlock').onclick = async ()=>{
+  $('#err').textContent='';
+  const ok = await tryPin($('#pin').value.trim());
+  if(!ok) $('#err').textContent='קוד שגוי';
+};
+$('#pin').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#unlock').click(); });
+
+// פתיחה אוטומטית אם כבר הוזן קוד בסשן הזה
+(async ()=>{ const k=sessionStorage.getItem('k'); if(k){ if(!await tryPin(k)) $('#pin').focus(); } else $('#pin').focus(); })();
+</script>
+</body>
+</html>
